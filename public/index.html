@@ -1,0 +1,58 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Toca Timbre</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages li {
+            padding: 5px 10px;
+        }
+
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+    <ul id="messages"></ul>
+    <form action="" id="form">
+        <input id="input" autocomplete="off">
+        <button>Send</button>
+    </form>
+    
+    <script>
+        // 1. Select DOM Elements
+        const form = document.getElementById('form')
+        const input = document.getElementById('input')
+        
+        // 2. Create instance of socket.
+        const socket = io()
+        
+        // 3. Attach Event Listener To The Form
+        form.addEventListener('submit', e => {
+            e.preventDefault()
+
+            if (input.value) {
+                // 4. Providing Data "To" The Server
+                socket.emit('chat message', input.value);
+                input.value = "";
+            }
+        });
+        
+        // 4. Receiving/Getting data "from" the server
+        socket.on('chat message', (msg) => {
+            const item = document.createElement('li');
+            item.textContent = msg;
+            document.getElementById('messages').appendChild(item)
+        })
+    </script>
+</body>
+</html>
